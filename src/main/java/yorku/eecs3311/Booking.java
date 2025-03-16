@@ -49,7 +49,7 @@ public class Booking extends PaymentObserver{
 	@Override
 	public void update() {
 		Double paid = subject.amountExchanged;
-		if((int)(paid*100) < _amountToPay.intValue()) {
+		if((int)(paid*100) < _amountToPay.intValue()*100) {
 			double balance = _amountToPay-paid;
 			subject.pay(balance); //TOOD change amount via GUI
 		}
