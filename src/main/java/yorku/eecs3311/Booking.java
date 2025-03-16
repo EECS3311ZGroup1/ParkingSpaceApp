@@ -12,6 +12,7 @@ public class Booking extends Observer{
 	private Date _start;
 	private Date _end;
 	private ParkingComponent _spot;
+	private User _user;
 	
 	private Booking(PaymentService subject) {
 		super(subject);
@@ -20,6 +21,7 @@ public class Booking extends Observer{
 	
 	public static Booking book(User user, ParkingComponent spot, Date start, Date end, PaymentService service) {
 		Booking booking = new Booking(service);
+		booking._user = user;
 		booking._start = start;
 		booking._end = end;
 		booking._spot = spot;
