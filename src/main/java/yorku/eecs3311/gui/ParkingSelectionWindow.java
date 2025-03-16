@@ -22,9 +22,9 @@ public class ParkingSelectionWindow {
 		parkingSpaceList = new JList<ListElement<ParkingSpace>>();
 		model = new DefaultListModel<>();
 		
-		model.addElement(new ListElement<ParkingSpace>("ParkingSpace1", new ParkingSpace(1,2,true)));
-		model.addElement(new ListElement<ParkingSpace>("ParkingSpace2", new ParkingSpace(3,4,true)));
-		model.addElement(new ListElement<ParkingSpace>("ParkingSpace3", new ParkingSpace(5,6,true)));
+		model.addElement(new ListElement<ParkingSpace>("ParkingSpace1", new ParkingSpace(1,"loc1")));
+		model.addElement(new ListElement<ParkingSpace>("ParkingSpace2", new ParkingSpace(3,"loc3")));
+		model.addElement(new ListElement<ParkingSpace>("ParkingSpace3", new ParkingSpace(5,"loc5")));
 		
 		
 		window.setTitle("York Parking Space Selection");
