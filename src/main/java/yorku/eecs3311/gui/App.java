@@ -20,6 +20,7 @@ public class App extends JFrame {
         layout = new CardLayout();
         mainPanel.setLayout(layout);
 
+
         testButton = new JButton();
         testButton.setText("NEXT PAGE");
         testButton.addActionListener(new ActionListener() {
