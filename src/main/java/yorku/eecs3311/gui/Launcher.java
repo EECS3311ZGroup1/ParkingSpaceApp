@@ -11,8 +11,11 @@ public class Launcher {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				ParkingSelectionWindow main = new ParkingSelectionWindow();
-				main.show();
+				//Commented out to test App.java
+//				ParkingSelectionWindow main = new ParkingSelectionWindow();
+//				main.show();
+				App app = new App();
+				app.setVisible(true); // Use this instead of .show()
 			}
 			
 		});
