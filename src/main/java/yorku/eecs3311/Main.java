@@ -1,86 +1,118 @@
 package yorku.eecs3311;
 
-import java.awt.Color;
-import java.awt.Image;
-
-import javax.lang.model.element.NestingKind;
-import javax.swing.*;
-
 import yorku.eecs3311.controller.ViewController;
+import yorku.eecs3311.manager.ManagerAccount;
+import yorku.eecs3311.manager.SuperManager;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
+	
+	private static final Scanner scanner = new Scanner(System.in);
+	
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n[*] Welcome to YorkU Parking Booking System");
+            System.out.println("---1. User Mode");
+            System.out.println("---2. Manager Mode");
+            System.out.println("---3. Super Manager Mode");
+            System.out.println("---4. Exit");
+            System.out.print("Enter your choice: ");
+            
+            if (!scanner.hasNextInt()) {
+                scanner.next(); 
+                System.out.println("\n[-] Invalid input! Please enter a number.");
+                continue;
+            }
+            
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            switch (choice) {
+                case 1:
+                    startUserMode();
+                    break;
+                case 2:
+                    managerLogin();
+                    break;
+                case 3:
+                	superManagerLogin();
+                	break;
+                case 4:
+                    System.out.println("Exiting system...");
+                    scanner.close();
+                    return;
+                default:
+                    System.out.println("\n[-] Invalid choice. Please try again.");
+            }
+        }
+    }
 
-	public static void main(String[] args) {
-		
-		/*
-		 * TEST GUI
-		 * TEST GUI
-		 * TEST GUI
-		 */
-		new ViewController();
-		
-		/*
-		 * TEST SuperManager
-		 * TEST AutoAccountGeneration
-		 * TEST ManagerAccount
-		 * TEST Adding manager accounts into the database for later login
-		 */
-//		SuperManager superManager = SuperManager.getInstance();
-//		
-//		superManager.generateManagerAccount();
-//		superManager.generateManagerAccount();
-//		superManager.generateManagerAccount();
-//		superManager.showManagerAccounts();
-		
-		/*
-		 * TEST User registration with
-		 * -- invalid email
-		 * -- invalid pwd
-		 * -- invalid ID
-		 * -- duplicate
-		 */
-//		User nam = UserFactory.generateUser("student", "nam@yorku.ca", "aSSWW11@@", "s111");
-//		System.out.println(nam);
-//		
-//		User ping = UserFactory.generateUser("faculty", "ping@yorku.ca", "asasWW#777", "f222");
-//		System.out.println(ping);
-//		
-//		User john = UserFactory.generateUser("visitor", "john@hotmail.com", "ws23**sSS", null);
-//		System.out.println(john);
-//		
-//		User wrongIdUser = UserFactory.generateUser("staff", "ssss@hot.ca", "aasAA@D1((", "t222");
-//		System.out.println(wrongIdUser);
-		
-		// Test Adding User to Database
-//		User nam = UserFactory.generateUser("student", "nam13@yorku.ca", "aQQ11@@", "s2222");
-//		System.out.println(nam);
-		
-		/*
-		 * TEST Java GUI - JFrame
-		 * TEST AppView
-		 */
-//		AppView appView = new AppView();
-		
-		/*
-		 * TEST Java GUI - JPanel
-		 */
-//		JPanel rP = new JPanel();
-//		rP.setBackground(Color.red);
-//		rP.setBounds(0, 0, 250, 250);
-//		
-//		JPanel bP = new JPanel();
-//		bP.setBackground(Color.blue);
-//		bP.setBounds(250, 0, 250, 250);
-//		
-//		JFrame f = new JFrame();
-//		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//		f.setLayout(null);
-//		f.setSize(750, 750);
-//		f.setVisible(true);
-//		// add panels
-//		f.add(rP);
-//		f.add(bP);
+    // User mode as GUI
+    private static void startUserMode() {
+        new ViewController();
+    }
 
-	}
-
+    // Manager mode as command line
+    private static void managerLogin() {
+    	SuperManager superManager = SuperManager.getInstance();
+    	List<ManagerAccount> managers = superManager.getManagers();
+    	
+    	System.out.println("\n[*] Please enter your manager credentials.");
+        
+    	System.out.print("username: ");
+        String username = scanner.nextLine();
+        
+        System.out.print("password: ");
+        String password = scanner.nextLine();
+        
+        // Verify manager login
+        for (ManagerAccount manager : managers) {
+        	if (manager.getUsername().equals(username) && manager.getPwd().equals(password)) {
+        		System.out.println("\n[+] Login successful. Welcome, " + username + "!");
+            	manager.startManagerCLI();  // Manager CLI starts
+            	return;
+        	}
+        }
+        
+        System.out.println("\n[-] Invalid credentials. Try again.");
+    }
+    
+    // Super Manager mode as command line
+    private static void superManagerLogin() {
+    	SuperManager superManager = SuperManager.getInstance();
+    	
+    	while (true) {
+    		System.out.println("\n[*] Hello Super Manager");
+        	System.out.println("---1. Generate New Manager Account");
+        	System.out.println("---2. Show Existing Manager Accounts");
+        	System.out.println("---3. Exit");
+        	System.out.print("Enter your choice: ");
+        	
+        	if (!scanner.hasNextInt()) {
+                scanner.next(); 
+                System.out.println("\n[-] Invalid input! Please enter a number.");
+                continue;
+            }
+            
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+            
+            switch (choice) {
+                case 1:
+                    superManager.generateManagerAccount();
+                    break;
+                case 2:
+                    superManager.showManagerAccounts();
+                    break;
+                case 3:
+                	System.out.println("\n[*] See you again, Super Manager...");
+                    return;
+                default:
+                    System.out.println("\n[-] Invalid choice. Please try again.");
+            }
+        }
+    	
+    }
+    
 }

@@ -1,70 +1,86 @@
 package yorku.eecs3311.parking;
 
-public class ParkingSpace extends ParkingComponent {
+import java.time.LocalDate;
+import java.util.*;
+
+public class ParkingSpace {
 	
 	private int spaceID;
-	private String spaceLocation; // Lot A, Space 11 = A11
-	private boolean isSpaceEnabled;
-	private boolean isBooked;
+    private String spaceLocation;
+    private boolean isEnabled;
+    private final Map<String, List<TimeSlot>> availableTimeSlots;
 	private Sensor sensor;
 	
-	public ParkingSpace(int spaceID, String spaceLocation) {
-		this.spaceID = spaceID;
-		this.spaceLocation = spaceLocation;
-		this.isSpaceEnabled = true;
-		this.isBooked = false;
-		this.sensor = new Sensor();
+	public ParkingSpace(int spaceID, String lotName) {
+        this.spaceID = spaceID;
+        this.spaceLocation = lotName + spaceID;
+        this.isEnabled = true;
+        this.availableTimeSlots = new HashMap<>();
+        initializeSlots();
+        sensor = new Sensor();
+    }
+	
+	// Initialize 8 time slots per day for 5 days
+	private void initializeSlots() {
+        for (int i = 0; i < 5; i++) { // Generate slots for 5 days ahead
+            String date = LocalDate.now().plusDays(i).toString(); // Example: "2025-03-20"
+            List<TimeSlot> slots = new ArrayList<>();
+            
+            for (int hour = 8; hour < 18; hour++) { // 8AM - 5PM for 1 hour intervals
+                slots.add(new TimeSlot(hour + ":00"));
+            }
+            
+            availableTimeSlots.put(date, slots);
+        }
+    }
+	
+	// Get available time slots for a specific day
+	public List<TimeSlot> getSlotsForDate(String date) {
+        if (!isEnabled) { return new ArrayList<>(); }
+        return availableTimeSlots.get(date);
 	}
+    
+    // Book multiple slots
+	public boolean bookSlots(String date, List<String> times) {
+	    if (!isEnabled) return false;
 
-	public int getSpaceID() {
-		return spaceID;
-	}
+	    List<TimeSlot> slots = availableTimeSlots.get(date);
+	    if (slots == null) return false;
 
-	public String getSpaceLocation() {
-		return spaceLocation;
+	    boolean booked = false;
+	    for (TimeSlot slot : slots) {
+	        if (times.contains(slot.getTime()) && slot.isAvailable()) {
+	            slot.setBooked(true);
+	            booked = true;
+	        }
+	    }
+	    
+	    System.out.println("\n[*] Booking " + times + " on " + date);
+	    return booked;
 	}
 	
-	// Check if space is available for booking
-	public boolean isAvailable() {
-		return isSpaceEnabled && !isBooked;
+	// Get all available dates
+	public List<String> getAvailableDates() {
+		List<String> sortedDates = new ArrayList<>(availableTimeSlots.keySet());
+	    Collections.sort(sortedDates); // Sort in ascending order
+	    return sortedDates;
 	}
 	
-	// Handles booking logic
-	public void bookSpace() {
-		if(isAvailable()) {
-			isBooked = true;
-			System.out.println("[+] Space " + spaceLocation + " has been BOOKED.");
-		} else {
-			System.out.println("[-] Cannot book. Space " + spaceLocation + " is either disabled or already booked.");
-		}
-	}
-	
-	// Handle cancel booking logic
-	public void cancelBooking() {
-		isBooked = false;
-		System.out.println("[+] Booking canceled for space " + spaceLocation);
-	}
+	// Enable or disable a space
+	public void enable() { isEnabled = true; }
+    public void disable() { isEnabled = false; }
 
-	@Override
-	public void enable() {
-		isSpaceEnabled = true;
-	}
-
-	@Override
-	public void disable() {
-		isSpaceEnabled = false;
-	}
+	// Getters
+    public int getSpaceID() { return spaceID; }
+	public String getSpaceLocation() { return spaceLocation; }
+	public boolean isEnabled() { return isEnabled; }
+ 	
+	// Sensor for management purposes
+	public boolean isCarParked() { return sensor.isCarParked(); }
 	
 	@Override
-	boolean isEnabled() {
-		return isSpaceEnabled;
-	}
-
-	@Override
-	public void showStatus() {
-		System.out.println("Parking Space " + spaceLocation + " is " 
-	            + (isSpaceEnabled ? "ENABLED" : "DISABLED") 
-	            + " and " + (isBooked ? "BOOKED" : "AVAILABLE"));
+	public String toString() {
+	    return "Space ID: " + spaceID + " (" + spaceLocation + ") - " + (isEnabled ? "Enabled" : "Disabled");
 	}
 	
 }

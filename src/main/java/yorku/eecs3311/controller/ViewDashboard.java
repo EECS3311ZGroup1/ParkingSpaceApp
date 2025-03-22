@@ -6,12 +6,10 @@ import javax.swing.*;
 public class ViewDashboard extends JPanel {
 	
 	private JButton bookParkingButton, extendParkingButton, cancelBookingButton, logoutButton;
-	private ViewController controller;
 	
 	public ViewDashboard(ViewController controller) {
-        this.controller = controller;
-        
-     	// Central layout
+     	
+		// Central layout
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -22,23 +20,26 @@ public class ViewDashboard extends JPanel {
         // Title
         JLabel titleLabel = new JLabel("Dashboard", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
-
-        // Show buttons
-        bookParkingButton = new JButton("Book a Parking");
-        extendParkingButton = new JButton("Extend a Parking");
-        cancelBookingButton = new JButton("Cancel a Booking");
-        logoutButton = new JButton("Log Out");
-
-        // Action listeners
-        bookParkingButton.addActionListener(e -> controller.showBookingView());
-        logoutButton.addActionListener(e -> controller.showHeroView());
-
-        // Add components in order
         add(titleLabel, gbc);
+
+        // Book buttons
+        bookParkingButton = new JButton("Book a Parking");
+        bookParkingButton.addActionListener(e -> controller.showBookingView());
         add(bookParkingButton, gbc);
+        
+        // Extend button
+        extendParkingButton = new JButton("Extend a Parking");
         add(extendParkingButton, gbc);
+        
+        // Cancel button
+        cancelBookingButton = new JButton("Cancel a Booking");
         add(cancelBookingButton, gbc);
+        
+        // Log out button
+        logoutButton = new JButton("Log Out");
+        logoutButton.addActionListener(e -> controller.showHeroView());
         add(logoutButton, gbc);
+        
     }
 	
 }

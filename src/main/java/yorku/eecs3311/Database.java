@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import yorku.eecs3311.booking.Booking;
 import yorku.eecs3311.manager.ManagerAccount;
 import yorku.eecs3311.user.LoggedInUser;
 import yorku.eecs3311.user.User;
@@ -21,6 +22,7 @@ public class Database {
 	private static final String IDS_FILE = "src/main/resources/ids.csv";
 	private static final String USERS_FILE = "src/main/resources/users.csv";
 	private static final String MANAGERS_FILE = "src/main/resources/managers.csv";
+	private static final String BOOKINGS_FILE = "src/main/resources/bookings.csv";
 	private Map<String, List<String>> registeredUsers;
 	private Set<String> validUserIDs;
 	
@@ -118,7 +120,6 @@ public class Database {
 	        userData.add(String.valueOf(user.getRate()));
 
 	        registeredUsers.put(email, userData);
-//			loadUsersFromFile();
 		
 		} catch (Exception e) {
 			System.out.println("[-] Failed adding user: " + e.getMessage());
@@ -134,6 +135,21 @@ public class Database {
 		
 		} catch (Exception e) {
 			System.out.println("[-] Failed adding manager: " + e.getMessage());
+		}
+	}
+	
+	// Add booking to the database
+	public void addBookingToDatabase(Booking booking) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKINGS_FILE, true))) {
+			
+			writer.newLine();
+			writer.write(booking.getBookingID() + "," + booking.getLotName() + "," + booking.getSpaceID() + "," + booking.getStartHour() + "," + booking.getDur() + "," + booking.getPaymentMethod() + "," + booking.getDeposit());
+			
+			// Update cache
+			
+		
+		} catch (Exception e) {
+			System.out.println("[-] Failed adding booking: " + e.getMessage());
 		}
 	}
 	
@@ -155,9 +171,30 @@ public class Database {
 	    return null;
 	}
 	
-	// Return the logged in user
-	public User getLoggedInUser(String email) {
-		List<String> pwdIdRate = new ArrayList<>(3);
+	public List<ManagerAccount> loadManagers() {
+		List<ManagerAccount> managers = new ArrayList<>();
+		
+		try (BufferedReader reader = new BufferedReader(new FileReader(MANAGERS_FILE))) {
+	        
+			String line;
+	        while ((line = reader.readLine()) != null) {
+	            String[] data = line.split(",");
+	            if (data.length == 2) {
+	            	String username = data[0];
+	            	String pwd = data[1];
+	            	managers.add(new ManagerAccount(username, pwd));
+	            }
+	        }
+	    } catch (Exception e) {
+	        System.err.println("[-] Failed retrieving a manager account: " + e.getMessage());
+	    }
+		
+		return managers;
+	}
+	
+	// Get the logged in user
+	public LoggedInUser getLoggedInUser(String email) {
+		List<String> pwdIdRate = new ArrayList<>();
 		pwdIdRate = registeredUsers.get(email);
 		
 		// Build a logged in user

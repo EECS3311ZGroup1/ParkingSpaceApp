@@ -1,5 +1,7 @@
 package yorku.eecs3311.manager;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import yorku.eecs3311.Database;
 
@@ -11,14 +13,17 @@ public class AutoAccountGeneration {
 		database = Database.getInstance();
 	}
 	
-	// Generate account manager and add to the database
-	public ManagerAccount generateManagerAccount() {
+	// Generate manager account and add to the database
+	public void generateManagerAccount() {
 		ManagerAccount manager = new ManagerAccount(generateUsername(), generatePwd());
-		
 		database.addManagerToDatabase(manager);
-		System.out.println("[+] Manager account generated successfully: " + manager.getUsername());
 		
-		return manager;
+		System.out.println("\n[+] Manager account generated successfully: " + manager.getUsername());
+	}
+	
+	// Load manager accounts from the database
+	public List<ManagerAccount> loadManagers() {
+		return database.loadManagers();
 	}
 	
 	// Generate random name
