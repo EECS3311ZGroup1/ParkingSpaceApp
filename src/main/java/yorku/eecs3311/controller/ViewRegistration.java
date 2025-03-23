@@ -12,6 +12,7 @@ public class ViewRegistration extends JPanel {
     private ViewController controller;
 
     public ViewRegistration(ViewController controller) {
+    	
         this.controller = controller;
 
         // Center layout
@@ -25,45 +26,44 @@ public class ViewRegistration extends JPanel {
         // Title
         JLabel titleLabel = new JLabel("User Registration", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        add(titleLabel, gbc);
 
         // Show email
         JLabel emailLabel = new JLabel("Email:");
         emailField = new JTextField(15);
+        add(emailLabel, gbc);
+        add(emailField, gbc);
 
         // Show password
         JLabel passwordLabel = new JLabel("Password:");
         passwordField = new JPasswordField(15);
+        add(passwordLabel, gbc);
+        add(passwordField, gbc);
         
         // Show user type
         JLabel userTypeLabel = new JLabel("User Type:");
         String[] userTypes = {"Student", "Faculty", "Staff", "Visitor"};
         userTypeDropdown = new JComboBox<>(userTypes);
+        add(userTypeLabel, gbc);
+        add(userTypeDropdown, gbc);
         
         // Show ID
         idLabel = new JLabel("ID:");
         idField = new JTextField(15);
+        add(idLabel, gbc);
+        add(idField, gbc);
 
         // Show buttons
         registerButton = new JButton("Register");
         backButton = new JButton("Back");
+        add(registerButton, gbc);
+        add(backButton, gbc);
 
         // Action listeners
         userTypeDropdown.addActionListener(e -> toggleIDField());
         registerButton.addActionListener(e -> registerUser());
         backButton.addActionListener(e -> controller.showHeroView());
 
-        // Add components in order
-        add(titleLabel, gbc);
-        add(emailLabel, gbc);
-        add(emailField, gbc);
-        add(passwordLabel, gbc);
-        add(passwordField, gbc);
-        add(userTypeLabel, gbc);
-        add(userTypeDropdown, gbc);
-        add(idLabel, gbc);
-        add(idField, gbc);
-        add(registerButton, gbc);
-        add(backButton, gbc);
     }
     
     private void toggleIDField() {

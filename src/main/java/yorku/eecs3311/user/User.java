@@ -21,10 +21,6 @@ public abstract class User {
 		this.pwd = pwd;
 		this.id = id;
 	}
-	
-//	public User(String email, String pwd) {
-//		this(email, pwd, null);
-//	}
 
 	// Getters
 	public String getEmail() { return email; }

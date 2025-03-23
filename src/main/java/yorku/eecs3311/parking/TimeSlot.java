@@ -21,6 +21,10 @@ public class TimeSlot {
     public void setBooked(boolean booked) {
         this.isAvailable = !booked;
     }
+    
+    public void setAvailable(boolean isAvailable) {
+		this.isAvailable = isAvailable;
+	}
 
     @Override
     public String toString() {

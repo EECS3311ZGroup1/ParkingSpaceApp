@@ -7,9 +7,6 @@ public class ViewHero extends JPanel {
 
     public ViewHero(ViewController controller) {
     	
-    	// Logout the user
-//    	controller.setLoggedInUser(null);
-
         // Center layout
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

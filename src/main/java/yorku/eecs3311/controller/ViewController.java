@@ -1,11 +1,18 @@
 package yorku.eecs3311.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import yorku.eecs3311.Database;
+import yorku.eecs3311.booking.Booking;
 import yorku.eecs3311.manager.ManagerAccount;
 import yorku.eecs3311.model.ModelBooking;
 import yorku.eecs3311.model.ModelLogin;
+import yorku.eecs3311.model.ModelPayment;
 import yorku.eecs3311.model.ModelRegistration;
+import yorku.eecs3311.parking.ParkingLot;
 import yorku.eecs3311.parking.ParkingSpace;
+import yorku.eecs3311.payment.PaymentStrategy;
 import yorku.eecs3311.user.LoggedInUser;
 
 public class ViewController {
@@ -21,6 +28,7 @@ public class ViewController {
 	private ModelRegistration registrationModel;
 	private ModelLogin loginModel;
 	private ModelBooking bookingModel;
+	private ModelPayment paymentModel;
 	
 	// Booking info
 	private String selectedSpace;
@@ -32,6 +40,7 @@ public class ViewController {
 	
 	private LoggedInUser loggedInUser;
 	List<ParkingSpace> availableSpaces;
+	List<Booking> bookings;
 	
 	public ViewController() {
 		loggedInUser = null;
@@ -51,6 +60,7 @@ public class ViewController {
 		registrationModel = new ModelRegistration();
 		loginModel = new ModelLogin();
 		bookingModel = new ModelBooking();
+		paymentModel = new ModelPayment();
 		
 		// Start on Hero view
 		showHeroView();
@@ -75,6 +85,29 @@ public class ViewController {
 	            System.out.println("\n[-] No available parking spaces. Booking screen will not be shown.");
 	            return;
 	        }
+	    	
+	    	/*
+	    	 * IMPORTANT
+	    	 * Apply already booked time slots from past bookings
+	    	 */
+	    	List<Booking> confirmedBookings = Database.getInstance().getAllBookings();
+
+	    	for (Booking b : confirmedBookings) {
+	    	    if (!b.isCancelled() && !b.isCheckedOut()) {
+	    	        ParkingLot lot = ManagerAccount.getLotByName(b.getLotName());
+	    	        if (lot != null) {
+	    	            ParkingSpace space = lot.getSpaceById(b.getSpaceID());
+	    	            if (space != null) {
+	    	                // Rebuild time list
+	    	                List<String> bookedTimes = new ArrayList<>();
+	    	                for (int i = 0; i < b.getDur(); i++) {
+	    	                    bookedTimes.add((b.getStartHour() + i) + ":00");
+	    	                }
+	    	                space.bookSlots(b.getDate(), bookedTimes);
+	    	            }
+	    	        }
+	    	    }
+	    	}
 	        
 	        // Here we go
 	    	System.out.println("\n[*] Start Booking Session. Available Spaces: " + availableSpaces.size());
@@ -116,6 +149,34 @@ public class ViewController {
 	    mainView.showView("bookingConfirm");
 	}
 	
+	public void showCancelView() {
+		if (loggedInUser != null) {
+			// Retrieve all bookings of user
+			bookings = bookingModel.getUCUCBookingsByEmail(loggedInUser.getEmail());
+			
+	        // Start cancel session
+	    	System.out.println("\n[*] Start Cancel Session for " + loggedInUser.getEmail());
+	             
+	        ViewCancel cancelView = new ViewCancel(this);
+	        mainView.addView("cancel", cancelView);
+	        mainView.showView("cancel");
+	    }
+	}
+	
+	public void showCheckoutView() {
+		if (loggedInUser != null) {
+			// Retrieve all bookings of user
+			bookings = paymentModel.getUCUCBookingsByEmail(loggedInUser.getEmail());
+			
+	        // Start cancel session
+	    	System.out.println("\n[*] Start Checkout Session for " + loggedInUser.getEmail());
+	             
+	        ViewCheckout checkoutView = new ViewCheckout(this);
+	        mainView.addView("checkout", checkoutView);
+	        mainView.showView("checkout");
+	    }
+	}
+	
 	/*
 	 * Start session for logged in user
 	 */
@@ -125,7 +186,8 @@ public class ViewController {
 		ManagerAccount.addSubscriber(loggedInUser);
 		loggedInUser.update(ManagerAccount.getAvailableSpaces());
 		
-		System.out.println("\n[+] User Logged In. Available Spaces: " + this.loggedInUser.getAvailableSpaces().size());
+		System.out.println("\n[+] User Logged In. Available Spaces: " + 
+							this.loggedInUser.getAvailableSpaces().size());
 	}
 	
 	public void updateAvailableSpaces() {
@@ -148,7 +210,22 @@ public class ViewController {
 	}
 	
 	public boolean bookAParking() {
-		return bookingModel.bookAParking(selectedSpace, selectedDate, selectedTime, selectedDuration, selectedPlateNumber, selectedPaymentMethod, loggedInUser.getRate());
+		return bookingModel.bookAParking(
+				selectedSpace, selectedDate, selectedTime, 
+				selectedDuration, selectedPlateNumber, selectedPaymentMethod, 
+				loggedInUser.getRate(), loggedInUser.getEmail());
+	}
+	
+	public boolean cancelABooking(int selectedID) {
+        Booking booking = bookings.stream()
+                                   .filter(b -> b.getBookingID() == selectedID)
+                                   .findFirst().orElse(null);
+        
+        return bookingModel.cancelABooking(booking);
+	}
+	
+	public boolean checkoutBooking(Booking booking, PaymentStrategy strategy) {
+		return paymentModel.checkoutBooking(booking, strategy, loggedInUser.getRate());
 	}
 	
 	/*
@@ -161,5 +238,6 @@ public class ViewController {
 	public String getSelectedPlateNumber() { return selectedPlateNumber; }
 	public String getSelectedPaymentMethod() { return selectedPaymentMethod; }
 	public LoggedInUser getLoggedInUser() { return loggedInUser; }
+	public List<Booking> getBookings() { return bookings; }
 	
 }

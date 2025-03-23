@@ -66,6 +66,15 @@ public class ParkingSpace {
 	    return sortedDates;
 	}
 	
+	// Release time slots after cancel
+	public void releaseSlots(String date, List<String> timeSlots) {
+	    for (TimeSlot slot : getSlotsForDate(date)) {
+	        if (timeSlots.contains(slot.getTime())) {
+	            slot.setAvailable(true);
+	        }
+	    }
+	}
+	
 	// Enable or disable a space
 	public void enable() { isEnabled = true; }
     public void disable() { isEnabled = false; }
