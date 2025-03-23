@@ -6,7 +6,7 @@ import javax.swing.*;
 public class ViewDashboard extends JPanel {
 	
 	private JButton bookParkingButton, 
-					extendParkingButton, 
+					extendBookingButton, 
 					cancelBookingButton,
 					checkoutButton,
 					logoutButton;
@@ -32,8 +32,9 @@ public class ViewDashboard extends JPanel {
         add(bookParkingButton, gbc);
         
         // Extend button
-        extendParkingButton = new JButton("Extend a Parking");
-        add(extendParkingButton, gbc);
+        extendBookingButton = new JButton("Extend a Booking");
+        extendBookingButton.addActionListener(e -> controller.showExtendView());
+        add(extendBookingButton, gbc);
         
         // Cancel button
         cancelBookingButton = new JButton("Cancel a Booking");

@@ -17,7 +17,7 @@ public class ViewCancel extends JPanel {
 
     public ViewCancel(ViewController controller) {
 
-        // Fetch un-cancelled bookings
+        // Fetch un-cancelled un-checkedout bookings
         List<Booking> bookings = controller.getBookings();
 
         // Layout

@@ -55,7 +55,7 @@ public class ParkingSpace {
 	        }
 	    }
 	    
-	    System.out.println("\n[*] Booking " + times + " on " + date);
+//	    System.out.println("\n[*] Booking " + times + " on " + date);
 	    return booked;
 	}
 	

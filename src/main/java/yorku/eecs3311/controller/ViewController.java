@@ -151,7 +151,7 @@ public class ViewController {
 	
 	public void showCancelView() {
 		if (loggedInUser != null) {
-			// Retrieve all bookings of user
+			// Retrieve all un-cancelled un-checkedout bookings of user
 			bookings = bookingModel.getUCUCBookingsByEmail(loggedInUser.getEmail());
 			
 	        // Start cancel session
@@ -160,6 +160,20 @@ public class ViewController {
 	        ViewCancel cancelView = new ViewCancel(this);
 	        mainView.addView("cancel", cancelView);
 	        mainView.showView("cancel");
+	    }
+	}
+	
+	public void showExtendView() {
+		if (loggedInUser != null) {
+			// Retrieve all un-extended (UCUC included) bookings of user
+			bookings = bookingModel.getUEBookingsByEmail(loggedInUser.getEmail());
+			
+	        // Start extend session
+	    	System.out.println("\n[*] Start Extend Session for " + loggedInUser.getEmail());
+	             
+	    	ViewExtend extendView = new ViewExtend(this);
+	        mainView.addView("extend", extendView);
+	        mainView.showView("extend");
 	    }
 	}
 	
@@ -216,10 +230,17 @@ public class ViewController {
 				loggedInUser.getRate(), loggedInUser.getEmail());
 	}
 	
+	public boolean extendABooking(int selectedID, int extraHours) {
+		Booking booking = bookings.stream()
+                				  .filter(b -> b.getBookingID() == selectedID)
+                				  .findFirst().orElse(null);
+		return bookingModel.extendABooking(booking, extraHours);
+	}
+	
 	public boolean cancelABooking(int selectedID) {
         Booking booking = bookings.stream()
-                                   .filter(b -> b.getBookingID() == selectedID)
-                                   .findFirst().orElse(null);
+                                  .filter(b -> b.getBookingID() == selectedID)
+                                  .findFirst().orElse(null);
         
         return bookingModel.cancelABooking(booking);
 	}

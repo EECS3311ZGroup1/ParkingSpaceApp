@@ -1,5 +1,3 @@
 id,lot,space,date,start,dur,payment,deposit,email,isExtended,isCancelled,isCheckedOut
-44753,A,1,2025-03-23,8,5,Credit Card,5.0,nam@nam.com,false,true,false
-47780,A,1,2025-03-22,8,5,Mobile Phone,5.0,nam@nam.com,false,false,false
-82081,A,4,2025-03-24,8,4,Mobile Phone,15.0,kaka@kaka.com,false,false,false
-52244,A,1,2025-03-23,8,5,Credit Card,5.0,nam@nam.com,false,false,false
+36781,A,1,2025-03-23,8,2,Credit Card,5.0,nam@nam.com,false,false,false
+14604,A,1,2025-03-23,13,5,Mobile Phone,15.0,kaka@kaka.com,false,false,false

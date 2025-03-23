@@ -1,5 +1,7 @@
 package yorku.eecs3311;
 
+import static org.junit.Assert.assertFalse;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -16,6 +18,7 @@ import org.junit.validator.PublicClassValidator;
 import yorku.eecs3311.booking.Booking;
 import yorku.eecs3311.booking.BookingBuilder;
 import yorku.eecs3311.manager.ManagerAccount;
+import yorku.eecs3311.parking.ParkingSpace;
 import yorku.eecs3311.user.LoggedInUser;
 import yorku.eecs3311.user.User;
 
@@ -279,7 +282,73 @@ public class Database {
 		return bookings;
 	}
 	
-	// Update cancel booking
+	// Get un-extended (UCUC included) bookings by email
+	public List<Booking> getUEBookingsByEmail(String email) {
+		loadBookingsFromFile();
+		List<Booking> bookings = new ArrayList<>();
+		
+		for (Booking b : bookingCache) {
+			if (b.getEmail().equalsIgnoreCase(email) &&
+				b.isCancelled() == false &&
+				b.isCheckedOut() == false &&
+				b.isExtended() == false) {
+				
+				bookings.add(b);
+			}
+		}
+		
+		return bookings;
+	}
+	
+	// Update extended booking
+	public void extendABooking(Booking booking, int extraHours, String date, ParkingSpace space) {
+		// Load all bookings
+	    List<Booking> allBookings = getAllBookings();
+
+	    // Modify the matching booking
+	    for (Booking b : allBookings) {
+	        if (b.getBookingID() == booking.getBookingID() &&
+	            b.getEmail().equalsIgnoreCase(booking.getEmail())) {
+	            
+	        	boolean success = b.extend(extraHours, date, space);
+	        	if (!success) {
+	        		return;
+	        	}
+	            break;
+	        }
+	    }
+
+	    // Rewrite the CSV
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOKINGS_FILE))) {
+	        // Write header
+	        writer.write("id,lot,space,date,start,dur,payment,deposit,email,isExtended,isCancelled,isCheckedOut");
+	        writer.newLine();
+
+	        // Write all bookings
+	        for (Booking b : allBookings) {
+	            writer.write(
+	                b.getBookingID() + "," + b.getLotName() + "," +
+	                b.getSpaceID() + "," + b.getDate() + "," +
+	                b.getStartHour() + "," + b.getDur() + "," +
+	                b.getPaymentMethod() + "," + b.getDeposit() + "," +
+	                b.getEmail() + "," +
+	                b.isExtended() + "," + b.isCancelled() + "," +
+	                b.isCheckedOut()
+	            );
+	            writer.newLine();
+	        }
+
+	        // Update cache
+	        loadBookingsFromFile();
+
+	        System.out.println("\n[+] Booking extended successfully.");
+
+	    } catch (Exception e) {
+	        System.out.println("\n[-] Error writing to CSV: " + e.getMessage());
+	    }
+	}
+	
+	// Update cancelled booking
 	public void cancelABooking(Booking booking) {
 	    // Load all bookings
 	    List<Booking> allBookings = getAllBookings();
@@ -288,7 +357,8 @@ public class Database {
 	    for (Booking b : allBookings) {
 	        if (b.getBookingID() == booking.getBookingID() &&
 	            b.getEmail().equalsIgnoreCase(booking.getEmail())) {
-	            b.cancel(); // Mark as cancelled
+	            
+	        	b.cancel(); // Mark as cancelled
 	            break;
 	        }
 	    }
