@@ -1,7 +1,5 @@
 package yorku.eecs3311;
 
-import static org.junit.Assert.assertFalse;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -12,8 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.validator.PublicClassValidator;
 
 import yorku.eecs3311.booking.Booking;
 import yorku.eecs3311.booking.BookingBuilder;
