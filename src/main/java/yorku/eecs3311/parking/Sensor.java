@@ -3,33 +3,37 @@ package yorku.eecs3311.parking;
 public class Sensor {
 	
 	private boolean isCarParked;
-	private String plate;
+	String make, model, plateNumber;
 	
 	public Sensor() {
 		isCarParked = false;
-		plate = "";
+		make = "";
+		model = "";
+		plateNumber = "";
 	}
 	
-	public void scanCarInfo(String plate) {
-		this.plate = plate;
+	public void scanCarInfo(Car car) {
 		isCarParked = true;
+		make = car.getMake();
+		model = car.getModel();
+		plateNumber = car.getPlateNumber();
 	}
 	
 	public void clearCarInfo() {
-		this.plate = "";
 		isCarParked = false;
+		make = "";
+		model = "";
+		plateNumber = "";
 	}
 	
 	public void sendCarInfo() {
-		System.out.println("Sending car info with plate: " + plate + " to the system.");
+		System.out.println("\n[*] Sending car info to the system...");
+		System.out.println("[+] Car [make=" + make + ", model=" + model + ", plateNumber=" + plateNumber + "]");
+		
 	}
 	
 	public boolean isCarParked() {
 		return isCarParked;
-	}
-
-	public String getPlate() {
-		return plate;
 	}
 	
 }

@@ -1,3 +1,7 @@
 id,lot,space,date,start,dur,payment,deposit,email,isExtended,isCancelled,isCheckedOut
-36781,A,1,2025-03-23,8,2,Credit Card,5.0,nam@nam.com,false,false,false
-14604,A,1,2025-03-23,13,5,Mobile Phone,15.0,kaka@kaka.com,false,false,false
+69115,A,1,2025-03-24,8,5,Credit Card,5.0,nam@nam.com,false,false,true
+27315,A,1,2025-03-24,15,2,Debit Card,8.0,fal@fal.com,false,false,false
+62274,B,5,2025-03-27,8,4,Mobile Phone,10.0,staff@staff.com,false,false,true
+94322,B,10,2025-03-28,13,3,Debit Card,15.0,visitor@visitor.com,false,false,false
+70893,B,10,2025-03-28,8,5,Mobile Phone,5.0,nam@nam.com,true,false,false
+83565,A,6,2025-03-27,12,4,Mobile Phone,5.0,nam@nam.com,false,true,false

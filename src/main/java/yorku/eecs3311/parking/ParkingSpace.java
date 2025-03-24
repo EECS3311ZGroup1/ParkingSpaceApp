@@ -83,7 +83,8 @@ public class ParkingSpace {
     public int getSpaceID() { return spaceID; }
 	public String getSpaceLocation() { return spaceLocation; }
 	public boolean isEnabled() { return isEnabled; }
- 	
+	public Sensor getSensor() { return sensor; }
+	
 	// Sensor for management purposes
 	public boolean isCarParked() { return sensor.isCarParked(); }
 	
